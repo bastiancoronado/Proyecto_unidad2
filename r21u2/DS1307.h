@@ -24,6 +24,7 @@ class DS1307
     void setDate(uint8_t dWeek, uint8_t date, uint8_t mounth, uint8_t year);
     bool onBus();
     uint8_t getDate(uint8_t* date);
+    void getAllDate(uint8_t* date);
     uint8_t getAddress();    
 
   private:

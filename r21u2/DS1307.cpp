@@ -100,6 +100,28 @@ uint8_t DS1307::getDate(uint8_t* date){
   return binDec_Hrs(t[2]);
 }
 
+void DS1307::getAllDate(uint8_t* date){
+  byte t[8]; 
+  Wire.beginTransmission(_address);
+  Wire.write(0);
+  Wire.endTransmission(false);     
+  Wire.requestFrom(_address, sizeof(t));
+
+  for (uint8_t i = 0; i < sizeof(t); i++){
+    t[i] = Wire.read(); 
+  }
+  *date = binDec_date(t[0]);
+  *(date+1) = binDec_date(t[1]);
+  *(date+2) = binDec_Hrs(t[2]) == 0 ? binDec_24Hrs(t[2]) : binDec_12Hrs(t[2]);
+  *(date+3) = binDec_date(t[3]);
+  *(date+4) = binDec_date(t[4]);
+  *(date+5) = binDec_date(t[5]);
+  *(date+6) = binDec_date(t[6]);
+  *(date+7) = binDec_Hrs(t[2]); 
+  Wire.endTransmission();
+
+}
+
 uint8_t DS1307::getAddress(){
   return _address;
 }

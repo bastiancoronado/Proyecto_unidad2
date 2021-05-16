@@ -28,23 +28,18 @@ public class Protocol : AbstractSerialThread
 
     protected override object ReadFromWire(SerialPort serialPort)
     {
-        if (serialPort.BytesToRead >= 6)
+        if (serialPort.BytesToRead > 0)
         {
-
-            bufferUsed = serialPort.Read(buffer, 0, 6);
-            byte[] returnBuffer = new byte[bufferUsed];
+            bufferUsed = 0;
+            // wait for the rest of data
+            while (bufferUsed < (buffer[0] + 1))
+            {
+                bufferUsed = bufferUsed + serialPort.Read(buffer, bufferUsed, 12);
+            }
+            // send the package to the application
+            byte[] returnBuffer = new byte[bufferUsed + 1];
             System.Array.Copy(buffer, returnBuffer, bufferUsed);
-            /*
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append("Packet: ");
-                        foreach (byte data in buffer)
-                        {
-                            sb.Append(data.ToString("X2") + " ");
-                        }
-                        sb.Append("Checksum fails");
-                        Debug.Log(sb);
-            */
-
+            bufferUsed = 0;
             return returnBuffer;
         }
         else
