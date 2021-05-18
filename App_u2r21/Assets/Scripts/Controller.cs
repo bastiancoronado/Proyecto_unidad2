@@ -5,9 +5,9 @@ using System.Threading;
 
 public class Controller : MonoBehaviour
 {
-    string portName = "COM8";
+    string portName;
 
-    int baudRate = 115200;
+    int baudRate;
 
     [Tooltip("Reference to an scene object that will receive the events of connection, " +
             "disconnection and the messages from the serial device.")]
@@ -30,16 +30,17 @@ public class Controller : MonoBehaviour
     {
         switch (val)
         {
-            case 0:
+
+            case 1:
                 baudRate = 9600;
                 break;
-            case 1:
+            case 2:
                 baudRate = 19200;
                 break;
-            case 2:
+            case 3:
                 baudRate = 38400;
                 break;
-            case 3:
+            case 4:
                 baudRate = 115200;
                 break;
         }
@@ -47,7 +48,7 @@ public class Controller : MonoBehaviour
 
     public void portIn(int val)
     {
-        portName = SerialCof.serialPorts[val];
+        portName = SerialCof.serialPorts[val-1];
     }
 
     void OnEnable()

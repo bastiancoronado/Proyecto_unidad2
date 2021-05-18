@@ -11,10 +11,7 @@ Adafruit_BME280 bme(BME_CS);
 void setup() {
   Serial.begin(115200);
   clk.setAddress();
-  //clk.setAllDate(50, 59, 11, false, 2, 17, 12, 21);  
-   bool status;
-  
-   // default settings
+   bool status;  
    status = bme.begin();
    if (!status) {
        Serial.println("Could not find a valid BME280 sensor, check wiring!");
@@ -28,7 +25,7 @@ task();
 
 void task(){
   enum class serialStates{Init, Send, Waith};
-  static auto state = serialStates::Waith;
+  static auto state = serialStates::Init;
       
   uint8_t bufferTx[12] = {0};
   uint8_t bufferRx[8] = {0}; //
@@ -40,8 +37,7 @@ void task(){
   switch(state){
     case serialStates::Init:    
     if(Serial.available()){      
-      if(Serial.read() == 0x73){
-        //clk.setAllDate(50, 59, 11, false, 2, 17, 12, 21);              
+      if(Serial.read() == 0x73){    // read "s"   
         state = serialStates::Waith;
       }
     }
@@ -57,7 +53,7 @@ void task(){
         break;
       }      
     }
-    
+    Serial.write(0x49);// send "I"
     //ya llegaron
     for (uint8_t i = 0; i < sizeof(bufferRx); i++){
       bufferTx[i] = bufferRx[i];
@@ -71,7 +67,7 @@ void task(){
     
     if ((tm + 2000) > millis() ){
       if(Serial.available()){
-          if(Serial.read() == 0x73){
+          if(Serial.read() == 0x72){// read "r"   
             clk.getAllDate(bufferTx);
             float num = bme.readHumidity();
             memcpy(bufferTx + 8,(uint8_t *)&num,4);

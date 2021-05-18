@@ -13,15 +13,19 @@ public class Sample : MonoBehaviour
     byte[] Rx = new byte[8];
     string[] dayWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
-
+    string[] states = { "Init", "Send", "Waith" };
+    string mode;
 
     void Start()
     {
+        serialController = GameObject.Find("SerialController").GetComponent<Controller>();
+
+        mode = states[1];
         //serialController = GameObject.Find("SerialController").GetComponent<Controller>();
 
         string[] current = DateTime.Now.ToString().Split(' ');
         string[][] date = { current[0].Trim().Split('/'), current[1].Trim().Split(':'), current[2].Trim().Split('.') };
-        Debug.Log(current[1] + " " + current[2] + current[3] + " " + DateTime.Now.DayOfWeek + " " + current[0]);
+        //Debug.Log(current[1] + " " + current[2] + current[3] + " " + DateTime.Now.DayOfWeek + " " + current[0]);
 
         Rx[0] = (byte)int.Parse(date[1][2]);
         Rx[1] = (byte)int.Parse(date[1][1]);
@@ -32,7 +36,7 @@ public class Sample : MonoBehaviour
         Rx[6] = (byte)int.Parse(date[0][1]);
         Rx[7] = (byte)(int.Parse(date[0][2]) - 2000);
 
-        Debug.Log(Rx[0] + ", " + Rx[1] + ", " + Rx[2] + ", " + Rx[3] + ", " + Rx[4] + ", " + Rx[5] + ", " + Rx[6] + ", " + Rx[7]);
+        //Debug.Log(Rx[0] + ", " + Rx[1] + ", " + Rx[2] + ", " + Rx[3] + ", " + Rx[4] + ", " + Rx[5] + ", " + Rx[6] + ", " + Rx[7]);
         
 
     }
@@ -40,7 +44,16 @@ public class Sample : MonoBehaviour
 
     void Update()
     {
+        switch (mode)
+        {
+            case "Init":
+                break;
+            case "Send":
+                break;
+            case "Waith":
+                break;
 
+        }
         //---------------------------------------------------------------------
         // Send data
         //---------------------------------------------------------------------
@@ -76,10 +89,5 @@ public class Sample : MonoBehaviour
         */
     }
 
-    static byte stringToint(string chain, int pos1, int pos2)
-    {
-        byte bt = (byte)int.Parse(chain.Substring(pos1, pos2));
-        return 0;
-    }
 
 }
