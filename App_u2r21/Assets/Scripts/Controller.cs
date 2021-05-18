@@ -1,17 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
 using System.Threading;
 
 public class Controller : MonoBehaviour
 {
-    [Tooltip("Port name with which the SerialPort object will be created.")]
-    public string portName = "COM8";
+    string portName = "COM8";
 
-    [Tooltip("Baud rate that the serial device is using to transmit data.")]
-    public int baudRate = 115200;
+    int baudRate = 115200;
 
     [Tooltip("Reference to an scene object that will receive the events of connection, " +
             "disconnection and the messages from the serial device.")]
@@ -25,16 +21,35 @@ public class Controller : MonoBehaviour
             "New messages will be discarded.")]
     public int maxUnreadMessages = 1;
 
-    // Internal reference to the Thread and the object that runs in it.
+
     protected Thread thread;
     protected Protocol serialThread;
+    public Configuration SerialCof;
 
+    public void BoundRate(int val)
+    {
+        switch (val)
+        {
+            case 0:
+                baudRate = 9600;
+                break;
+            case 1:
+                baudRate = 19200;
+                break;
+            case 2:
+                baudRate = 38400;
+                break;
+            case 3:
+                baudRate = 115200;
+                break;
+        }
+    }
 
-    // ------------------------------------------------------------------------
-    // Invoked whenever the SerialController gameobject is activated.
-    // It creates a new thread that tries to connect to the serial device
-    // and start reading from it.
-    // ------------------------------------------------------------------------
+    public void portIn(int val)
+    {
+        portName = SerialCof.serialPorts[val];
+    }
+
     void OnEnable()
     {
         serialThread = new Protocol(portName,
