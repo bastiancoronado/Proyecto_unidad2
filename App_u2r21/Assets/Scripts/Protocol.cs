@@ -32,14 +32,14 @@ public class Protocol : AbstractSerialThread
         {
             bufferUsed = 0;
             // wait for the rest of data
-            while (bufferUsed < (buffer[0] + 1))
+            while (bufferUsed < 12)
             {
                 bufferUsed = bufferUsed + serialPort.Read(buffer, bufferUsed, 12);
             }
+
             // send the package to the application
-            byte[] returnBuffer = new byte[bufferUsed + 1];
+            byte[] returnBuffer = new byte[12];
             System.Array.Copy(buffer, returnBuffer, bufferUsed);
-            bufferUsed = 0;
             return returnBuffer;
         }
         else

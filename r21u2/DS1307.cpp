@@ -19,12 +19,12 @@ void DS1307::setAddress(){
   _address = address; 
  }
 
-void DS1307::setAllDate(uint8_t sg, uint8_t mn, uint8_t hr, bool ampm, uint8_t dWeek, uint8_t date, uint8_t mounth, uint8_t year){ //Am/pm
+void DS1307::setAllDate(uint8_t sg, uint8_t mn, uint8_t hr, int ampm, uint8_t dWeek, uint8_t date, uint8_t mounth, uint8_t year){ //Am/pm
   Wire.beginTransmission(_address);
   Wire.write(0);
   Wire.write(decBin_date(sg));                   //segundos
   Wire.write(decBin_date(mn));                   //minutos
-  Wire.write(decBin_12Hrs(hr, ampm));            //Horas true->Pm, false->Am
+  Wire.write(decBin_12Hrs(hr, ampm == 1? true : false));            //Horas true->Pm, false->Am
   Wire.write(decBin_date(dWeek));                //dia de la semana
   Wire.write(decBin_date(date));                 //dia del mes
   Wire.write(decBin_date(mounth));               //mes
@@ -75,7 +75,7 @@ void DS1307::setDate(uint8_t dWeek, uint8_t date, uint8_t mounth, uint8_t year){
 
 bool DS1307::onBus(){
   Wire.beginTransmission(_address);  
-  bool t  = Wire.endTransmission() == 0 ? false : true;   
+  bool t  = Wire.endTransmission() == 0 ? true : false;   
   return t;  
 }
 
@@ -113,11 +113,12 @@ void DS1307::getAllDate(uint8_t* date){
   *date = binDec_date(t[0]);
   *(date+1) = binDec_date(t[1]);
   *(date+2) = binDec_Hrs(t[2]) == 0 ? binDec_24Hrs(t[2]) : binDec_12Hrs(t[2]);
-  *(date+3) = binDec_date(t[3]);
-  *(date+4) = binDec_date(t[4]);
-  *(date+5) = binDec_date(t[5]);
-  *(date+6) = binDec_date(t[6]);
-  *(date+7) = binDec_Hrs(t[2]); 
+  *(date+3) = binDec_Hrs(t[2]); 
+  *(date+4) = binDec_date(t[3]);
+  *(date+5) = binDec_date(t[4]);
+  *(date+6) = binDec_date(t[5]);
+  *(date+7) = binDec_date(t[6]);
+  
   Wire.endTransmission();
 
 }

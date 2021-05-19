@@ -3124,7 +3124,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2007366844}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7cc0057a69097944af56a7c9ee63ea5, type: 3}
   m_Name: 
@@ -3132,7 +3132,7 @@ MonoBehaviour:
   messageListener: {fileID: 0}
   reconnectionDelay: 1000
   maxUnreadMessages: 1
-  SerialCof: {fileID: 0}
+  SerialCof: {fileID: 233235448}
 --- !u!4 &2007366846
 Transform:
   m_ObjectHideFlags: 0

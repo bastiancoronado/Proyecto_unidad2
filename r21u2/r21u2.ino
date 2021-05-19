@@ -14,7 +14,7 @@ void setup() {
    bool status;  
    status = bme.begin();
    if (!status) {
-       Serial.println("Could not find a valid BME280 sensor, check wiring!");
+       //Serial.println("Could not find a valid BME280 sensor, check wiring!");
        while (1);
    }
 }
@@ -27,17 +27,17 @@ void task(){
   enum class serialStates{Init, Send, Waith};
   static auto state = serialStates::Init;
       
-  uint8_t bufferTx[12] = {0};
-  uint8_t bufferRx[8] = {0}; //
+  uint8_t bufferTx[12] = {0}; //transmite
+  uint8_t bufferRx[8] = {0};  //resive
   
   static uint8_t dataCounter = 0;  
   static uint16_t tm = 0; 
 
-  
   switch(state){
     case serialStates::Init:    
     if(Serial.available()){      
-      if(Serial.read() == 0x73){    // read "s"   
+      if(Serial.read() == 0x73){    // read "s"  
+        tm = millis();  
         state = serialStates::Waith;
       }
     }
@@ -45,52 +45,53 @@ void task(){
       
     case serialStates::Waith:
     //esperar datos
-    while(Serial.available()){
-      bufferRx[dataCounter] = Serial.read();
-      dataCounter++;
-      if((dataCounter+1) == sizeof(bufferRx)){
-        dataCounter = 0;
-        break;
-      }      
+    if(Serial.available() > 7){
+      while(Serial.available()){
+        bufferRx[dataCounter] = Serial.read();
+        dataCounter++;
+        if((dataCounter) == sizeof(bufferRx)){
+          dataCounter = 0;
+          break;
+        }      
+      }
+      //ya llegaron
+      
+      bufferTx[0] = 0x49; // send "I" 0x49
+      Serial.write(bufferTx,sizeof(bufferTx));
+          
+      for (uint8_t i = 0; i < sizeof(bufferRx); i++){
+        bufferTx[i] = bufferRx[i];
+      }
+      
+      clk.setAllDate(bufferRx[0], bufferRx[1], bufferRx[2], bufferRx[3], bufferRx[4], bufferRx[5], bufferRx[6], bufferRx[7]);
+      
+      state = serialStates::Send;
+      tm = millis();
+      
     }
-    Serial.write(0x49);// send "I"
-    //ya llegaron
-    for (uint8_t i = 0; i < sizeof(bufferRx); i++){
-      bufferTx[i] = bufferRx[i];
+    else if((tm + 10000) < millis()){
+      state = serialStates::Init;
     }
-    clk.getAllDate(bufferTx); 
-    state = serialStates::Send;
-    tm = millis();
       break;
       
     case serialStates::Send:
     
-    if ((tm + 2000) > millis() ){
-      if(Serial.available()){
-          if(Serial.read() == 0x72){// read "r"   
-            clk.getAllDate(bufferTx);
-            float num = bme.readHumidity();
-            memcpy(bufferTx + 8,(uint8_t *)&num,4);
-            Serial.write(bufferTx,12);
-            tm = millis();              
+    if(Serial.available()){       
+        if(Serial.read() == 0x72){// read "r" 
+                      
+          float num = bme.readHumidity();
+          memcpy(bufferTx + 8,(uint8_t *)&num,4);
+                      
+          if(clk.onBus()){
+            clk.getAllDate(bufferTx); 
+          }else{
+            for(uint8_t i = 0; i < 8; i++){
+               bufferTx[i] = 0;        
+            }
           }
-       }
-    }
-    else{
-      
-      state = serialStates::Init;
-    }
+          Serial.write(bufferTx,12);           
+        }
+     }
       break;
   }
-/*  
-  if(Serial.available()){
-      if(Serial.read() == 0x73){
-        clk.getAllDate(dt);
-        float num = bme.readHumidity();
-        memcpy(dt + 8,(uint8_t *)&num,4);
-        Serial.write(dt,12);
-          
-      }
-    }
-    */  
 }

@@ -7,53 +7,96 @@ using System;
 public class Sample : MonoBehaviour
 {
     public Controller serialController;
-    //private float timer = 0.0f;
-    //private float waitTime = 0.05f;
 
-    byte[] Rx = new byte[8];
-    string[] dayWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    float t = 0;
+    float lastt = 0;
 
-    string[] states = { "Init", "Send", "Waith" };
+    byte[] Rx;
+    byte[] bt = new byte[] { 0x73 };
+    string[] states = { "Init", "Send", "Waith", "Signal" };
     string mode;
+
+    byte[] message;
 
     void Start()
     {
+        mode = states[0];
         serialController = GameObject.Find("SerialController").GetComponent<Controller>();
-
-        mode = states[1];
-        //serialController = GameObject.Find("SerialController").GetComponent<Controller>();
-
-        string[] current = DateTime.Now.ToString().Split(' ');
-        string[][] date = { current[0].Trim().Split('/'), current[1].Trim().Split(':'), current[2].Trim().Split('.') };
-        //Debug.Log(current[1] + " " + current[2] + current[3] + " " + DateTime.Now.DayOfWeek + " " + current[0]);
-
-        Rx[0] = (byte)int.Parse(date[1][2]);
-        Rx[1] = (byte)int.Parse(date[1][1]);
-        Rx[2] = (byte)int.Parse(date[1][0]);
-        Rx[3] = date[2][0].Equals("p") ? (byte)1 : (byte)2;
-        Rx[4] = (byte)(1 + Array.IndexOf(dayWeek, DateTime.Now.DayOfWeek.ToString().Trim()));
-        Rx[5] = (byte)int.Parse(date[0][0]);
-        Rx[6] = (byte)int.Parse(date[0][1]);
-        Rx[7] = (byte)(int.Parse(date[0][2]) - 2000);
-
+        //Debug.Log(bt[0]);
         //Debug.Log(Rx[0] + ", " + Rx[1] + ", " + Rx[2] + ", " + Rx[3] + ", " + Rx[4] + ", " + Rx[5] + ", " + Rx[6] + ", " + Rx[7]);
-        
-
     }
 
 
     void Update()
     {
+
+        t += Time.deltaTime;
+
+
         switch (mode)
         {
             case "Init":
-                break;
-            case "Send":
+                if((lastt + 1) < t)
+                {
+                    lastt = t;
+                    serialController.SendSerialMessage(bt);
+                    Rx = getTime();
+                    serialController.SendSerialMessage(Rx);
+                    serialController.SendSerialMessage(Rx);
+                    mode = states[2];
+                }            
                 break;
             case "Waith":
+                message = serialController.ReadSerialMessage();
+                if (message == null)
+                    return;
+                StringBuilder sb = new StringBuilder();                
+                foreach (byte data in message)
+                {
+                    sb.Append(data.ToString("X2") + " ");
+                }
+                int p = int.Parse(sb.ToString().Substring(0,2));
+
+                if (p == 49)
+                {
+                    Debug.Log(p);
+                    mode = states[1];
+                }
+                
+
+                break;
+            case "Send":
+                if ((lastt + 1) < t)
+                {
+                    lastt = t;
+                    serialController.SendSerialMessage(new byte[] { 0x72 });
+                    mode = states[3];
+                }
+
+                break;
+
+            case "Signal":
+                message = serialController.ReadSerialMessage();
+                if (message == null)
+                    return;
+                StringBuilder rt = new StringBuilder();
+                foreach (byte data in message)
+                {
+                    rt.Append(data.ToString() + " ");
+                }
+
+                if (message != null)
+                {
+                    Debug.Log(rt);
+                    mode = states[1];
+                }
+
                 break;
 
         }
+
+
+
         //---------------------------------------------------------------------
         // Send data
         //---------------------------------------------------------------------
@@ -89,5 +132,22 @@ public class Sample : MonoBehaviour
         */
     }
 
+    static byte[] getTime()
+    {
+        string[] dayWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+        byte[] Tx = new byte[8];
+        string[] current = DateTime.Now.ToString().Split(' ');
+        string[][] date = { current[0].Trim().Split('/'), current[1].Trim().Split(':'), current[2].Trim().Split('.') };
 
+        Tx[0] = (byte)int.Parse(date[1][2]);
+        Tx[1] = (byte)int.Parse(date[1][1]);
+        Tx[2] = (byte)int.Parse(date[1][0]);
+        Tx[3] = date[2][0].Equals("p") ? (byte)1 : (byte)2;
+        Tx[4] = (byte)(1 + Array.IndexOf(dayWeek, DateTime.Now.DayOfWeek.ToString().Trim()));
+        Tx[5] = (byte)int.Parse(date[0][0]);
+        Tx[6] = (byte)int.Parse(date[0][1]);
+        Tx[7] = (byte)(int.Parse(date[0][2]) - 2000);
+
+        return Tx;
+    }
 }

@@ -17,7 +17,7 @@ class DS1307
     
     //initial
     void setAddress();    
-    void setAllDate(uint8_t sg, uint8_t mn, uint8_t hr, bool ampm, uint8_t dWeek, uint8_t date, uint8_t mounth, uint8_t year); //Am/pm
+    void setAllDate(uint8_t sg, uint8_t mn, uint8_t hr, int ampm, uint8_t dWeek, uint8_t date, uint8_t mounth, uint8_t year); //Am/pm
     void setAllDate(uint8_t sg, uint8_t mn, uint8_t hr, uint8_t dWeek, uint8_t date, uint8_t mounth, uint8_t year); //HH
     void setTime(bool pmam, uint8_t hr, uint8_t mn, uint8_t sg);
     void setTime(uint8_t hr, uint8_t mn, uint8_t sg);
