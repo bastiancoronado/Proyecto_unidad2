@@ -10,12 +10,15 @@ public class Sample : MonoBehaviour
 
     float t = 0;
     float lastt = 0;
-
+    static string[] dayWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+    static string[] mounth = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "Octuber", "November", "December" };
     byte[] Rx;
     byte[] bt = new byte[] { 0x73 };
     string[] states = { "Init", "Send", "Waith", "Signal" };
     string mode;
 
+    static string[] fecha = new string[8];
+    static float real = 0;
     byte[] message;
 
     void Start()
@@ -82,12 +85,25 @@ public class Sample : MonoBehaviour
                 StringBuilder rt = new StringBuilder();
                 foreach (byte data in message)
                 {
-                    rt.Append(data.ToString() + " ");
+                    rt.Append(data.ToString() + "-");
                 }
 
                 if (message != null)
                 {
-                    Debug.Log(rt);
+                    string[] date = rt.ToString().Split('-');
+                    for (uint i = 0; i < fecha.Length; i++) fecha[i] = date[i];                    
+
+                    byte[] realfloat = new byte[4];
+
+                    for (ushort i = 0; i < realfloat.Length; i++) realfloat[i] = message[8 + i];
+
+                    if (!BitConverter.IsLittleEndian) Array.Reverse(realfloat);
+
+                    real = System.BitConverter.ToSingle(realfloat, 0);
+
+                    string[] d = getNow();
+
+                    Debug.Log(d[0] + " " + d[1] + " " + d[2] + " " + d[3] + " " + d[4] + " " + d[5] + " " + d[6] + " " + d[7]);
                     mode = states[1];
                 }
 
@@ -97,48 +113,14 @@ public class Sample : MonoBehaviour
 
 
 
-        //---------------------------------------------------------------------
-        // Send data
-        //---------------------------------------------------------------------
-        /*
-        if (Input.GetKeyUp(KeyCode.Q))
-        {
-            serialController.SendSerialMessage(new byte[] { 0x73 });
-        }
-
-        timer += Time.deltaTime;
-        if (timer > waitTime)
-        {
-            timer = timer - waitTime;
-
-            serialController.SendSerialMessage(new byte[] { 0x73 });
-        }
-
-        
-
-        //---------------------------------------------------------------------
-        // Receive data
-        //---------------------------------------------------------------------
-
-        byte[] message = serialController.ReadSerialMessage();
-
-        if (message == null)
-            return;
-        */
-        /*
-        float x = ((float)System.BitConverter.ToUInt16(message, 0)) / 500F;
-        float y = ((float)System.BitConverter.ToUInt16(message, 2)) / 500F;
-        float z = ((float)System.BitConverter.ToUInt16(message, 4)) / 500F;
-        */
     }
 
     static byte[] getTime()
     {
-        string[] dayWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+        
         byte[] Tx = new byte[8];
         string[] current = DateTime.Now.ToString().Split(' ');
         string[][] date = { current[0].Trim().Split('/'), current[1].Trim().Split(':'), current[2].Trim().Split('.') };
-
         Tx[0] = (byte)int.Parse(date[1][2]);
         Tx[1] = (byte)int.Parse(date[1][1]);
         Tx[2] = (byte)int.Parse(date[1][0]);
@@ -150,4 +132,19 @@ public class Sample : MonoBehaviour
 
         return Tx;
     }
+
+    public static float getHum()
+    {        
+        return real;
+    }
+
+    public static string[] getNow()
+    {
+        fecha[3] = fecha[3] == "1" ? "Pm" : "Am"; 
+        fecha[4] = dayWeek[int.Parse(fecha[4]) - 1];
+        fecha[6] = mounth[int.Parse(fecha[6])];
+        fecha[7] = "20" + fecha[7];
+        return fecha;
+    }
+
 }
