@@ -11,6 +11,7 @@ public class Sample : MonoBehaviour
     public GameObject clk;
     public Text tx_clk;
     public Text tx_hmd;
+    public GameObject Clima;
 
     float t = 0;
     float lastt = 0;
@@ -65,6 +66,7 @@ public class Sample : MonoBehaviour
 
                 if (p == 49)
                 {
+                    Clima.SetActive(true);
                     clk.SetActive(true);
                     mode = states[1];
                 }
