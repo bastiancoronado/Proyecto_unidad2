@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using System;
+using UnityEngine.UI;
 
 public class Sample : MonoBehaviour
 {
     public Controller serialController;
+    public GameObject clk;
+    public Text tx_clk;
+    public Text tx_hmd;
 
     float t = 0;
     float lastt = 0;
@@ -23,10 +27,9 @@ public class Sample : MonoBehaviour
 
     void Start()
     {
+        
         mode = states[0];
         serialController = GameObject.Find("SerialController").GetComponent<Controller>();
-        //Debug.Log(bt[0]);
-        //Debug.Log(Rx[0] + ", " + Rx[1] + ", " + Rx[2] + ", " + Rx[3] + ", " + Rx[4] + ", " + Rx[5] + ", " + Rx[6] + ", " + Rx[7]);
     }
 
 
@@ -62,7 +65,7 @@ public class Sample : MonoBehaviour
 
                 if (p == 49)
                 {
-                    Debug.Log(p);
+                    clk.SetActive(true);
                     mode = states[1];
                 }
                 
@@ -103,15 +106,14 @@ public class Sample : MonoBehaviour
 
                     string[] d = getNow();
 
-                    Debug.Log(d[0] + " " + d[1] + " " + d[2] + " " + d[3] + " " + d[4] + " " + d[5] + " " + d[6] + " " + d[7]);
+                    tx_clk.text = d[2] + ":" + d[1] + ":" + d[0] + " " + d[3] + "\n" + d[4] + ", " + d[5] + " " + d[6] + " " + d[7];
+                    tx_hmd.text = "Humidity: " + real + "f.";
                     mode = states[1];
                 }
 
                 break;
 
         }
-
-
 
     }
 
@@ -133,10 +135,6 @@ public class Sample : MonoBehaviour
         return Tx;
     }
 
-    public static float getHum()
-    {        
-        return real;
-    }
 
     public static string[] getNow()
     {

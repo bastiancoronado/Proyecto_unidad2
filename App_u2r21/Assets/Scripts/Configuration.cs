@@ -12,6 +12,7 @@ public class Configuration : MonoBehaviour
 
 
 
+
     public Dropdown Port, BounRate;
     public string[] serialPorts;
     string[] boudrate = { "-", "9600", "19200", "38400", "115200" };
@@ -34,13 +35,13 @@ public class Configuration : MonoBehaviour
 
     void Update()
     {
-        
+
     }
 
     public void Desactivar()
     {
         Control.SetActive(true);
         obj.SetActive(true);
-        //Canvas.SetActive(false);
+        Canvas.SetActive(false);
     }
 }
