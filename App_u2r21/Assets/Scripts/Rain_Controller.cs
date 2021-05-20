@@ -19,7 +19,8 @@ public class Rain_Controller : MonoBehaviour
         emission = rain.emission;
         main = rain.main;
         duration = 0;
-        main.duration = totalDuration - 2;
+        main.duration = totalDuration - 2f;
+        
     }
 
 
@@ -28,7 +29,7 @@ public class Rain_Controller : MonoBehaviour
         float evaluateCurve = controlCurve.Evaluate(duration / totalDuration);
         emission.rateOverTime = (evaluateCurve * 1000) + 100;
         main.startSpeed = 4 * evaluateCurve + 1;
-        audiosource.volume = evaluateCurve;
+        //audiosource.volume = evaluateCurve;
         duration += Time.deltaTime;
     }
 }
