@@ -2294,7 +2294,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -595, y: 278}
+  m_AnchoredPosition: {x: -463, y: 278}
   m_SizeDelta: {x: 230, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &865100434
@@ -2310,7 +2310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2682,7 +2682,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -563.6, y: 246.40002}
+  m_AnchoredPosition: {x: -431.59998, y: 246.40002}
   m_SizeDelta: {x: 230, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1188495192
@@ -2698,7 +2698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3667,11 +3667,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7808458770500311056, guid: 9b548f9790a9ea14ca7ade976e82f061, type: 3}
       propertyPath: ShapeModule.m_Scale.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7808458770500311056, guid: 9b548f9790a9ea14ca7ade976e82f061, type: 3}
       propertyPath: ShapeModule.m_Scale.y
-      value: 100
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808458770500311056, guid: 9b548f9790a9ea14ca7ade976e82f061, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808458770500311056, guid: 9b548f9790a9ea14ca7ade976e82f061, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7808458770500311058, guid: 9b548f9790a9ea14ca7ade976e82f061, type: 3}
       propertyPath: m_RootOrder
@@ -3683,7 +3691,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7808458770500311058, guid: 9b548f9790a9ea14ca7ade976e82f061, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 20.2
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7808458770500311058, guid: 9b548f9790a9ea14ca7ade976e82f061, type: 3}
       propertyPath: m_LocalPosition.z
